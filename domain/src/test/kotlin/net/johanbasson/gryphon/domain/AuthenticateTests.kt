@@ -8,6 +8,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import net.johanbasson.gryphon.domain.users.Authenticate
 import net.johanbasson.gryphon.domain.users.Credentials
 import net.johanbasson.gryphon.domain.users.Token
@@ -25,7 +26,7 @@ class AuthenticateTests : FunSpec({
 
 
     test("should authenticate with correct credentials") {
-        GlobalScope.launch {
+        runBlocking {
             val result: Either<ApiError, Token> = Authenticate(secretKey, ::getUserByEmail)(Credentials("admin", "admin"))
             result.fold(
                     { err -> fail(err.toString()) },
@@ -35,12 +36,22 @@ class AuthenticateTests : FunSpec({
     }
 
     test("should return error if user could not be found") {
-        GlobalScope.launch {
+        runBlocking {
             val result: Either<ApiError, Token> = Authenticate(secretKey, ::getUserByEmailNotFound)(Credentials("admmin", "admin"))
             result.fold(
                     { err -> err shouldBe  ApiError.InvalidEmailOrPassword },
                     { fail("No token should be generated if user does not exists") }
             )
         }
+    }
+
+    test("should return error if password is incorrect") {
+        GlobalScope.launch {
+            val result: Either<ApiError, Token> = Authenticate(secretKey, ::getUserByEmail)(Credentials("admin", "admin1"))
+            result.fold(
+                    { err -> fail(err.toString()) },
+                    { token -> println(token) }
+            )
+        }.join()
     }
 })
