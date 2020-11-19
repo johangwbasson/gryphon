@@ -1,0 +1,9 @@
+group 'net.johanbasson.gryphon'
+version '1.0-SNAPSHOT'
+
+
+repositories {
+    jcenter()
+
+}
+
