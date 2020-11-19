@@ -22,6 +22,7 @@ object Authenticate {
 
     operator fun invoke(secretKey: SecretKey, getUserByEmail: GetUserByEmail): TokenResponse =  {credentials ->
        getUserByEmail(credentials.email)
+               .mapLeft { ApiError.InvalidEmailOrPassword }
                .flatMap { user -> checkPassword(user, credentials)}
                .flatMap { user -> Either.right(generateToken(user,secretKey)) }
     }

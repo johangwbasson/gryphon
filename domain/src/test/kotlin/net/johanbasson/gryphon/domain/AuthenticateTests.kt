@@ -20,9 +20,9 @@ class AuthenticateTests : FunSpec({
 
     val secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256)
 
-    fun getUserByEmail(email: String): Either<ApiError, User>  = Either.right(User(UUID.randomUUID(), "admin", BCrypt.hashpw("admin", BCrypt.gensalt())))
+    suspend fun getUserByEmail(email: String): Either<ApiError, User>  = Either.right(User(UUID.randomUUID(), "admin", BCrypt.hashpw("admin", BCrypt.gensalt())))
 
-    fun getUserByEmailNotFound(email: String): Either<ApiError, User> = Either.left(ApiError.UserNotFound)
+    suspend fun getUserByEmailNotFound(email: String): Either<ApiError, User> = Either.left(ApiError.UserNotFound)
 
 
     test("should authenticate with correct credentials") {
@@ -49,8 +49,8 @@ class AuthenticateTests : FunSpec({
         GlobalScope.launch {
             val result: Either<ApiError, Token> = Authenticate(secretKey, ::getUserByEmail)(Credentials("admin", "admin1"))
             result.fold(
-                    { err -> fail(err.toString()) },
-                    { token -> println(token) }
+                    { err -> err shouldBe ApiError.InvalidEmailOrPassword },
+                    { token -> fail("No token should be generated") }
             )
         }.join()
     }
