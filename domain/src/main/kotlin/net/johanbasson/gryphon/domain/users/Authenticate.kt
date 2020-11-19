@@ -36,16 +36,4 @@ object Authenticate {
         }
     }
 
-    private fun generateToken(user: User, secretKey: SecretKey): Token {
-        val expires = LocalDateTime.now().plusHours(2)
-        val instant: Instant = expires.atZone(ZoneId.systemDefault()).toInstant()
-        val jwt = Jwts.builder()
-                .setId(user.id.toString())
-                .setSubject("USER")
-                .setExpiration(Date.from(instant))
-                .signWith(secretKey)
-                .compact()
-        return Token(jwt, expires)
-    }
-
 }

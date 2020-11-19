@@ -1,4 +1,4 @@
-package net.johanbasson.gryphon.domain
+package net.johanbasson.gryphon.domain.users
 
 import arrow.core.Either
 import io.jsonwebtoken.SignatureAlgorithm
@@ -9,10 +9,7 @@ import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import net.johanbasson.gryphon.domain.users.Authenticate
-import net.johanbasson.gryphon.domain.users.Credentials
-import net.johanbasson.gryphon.domain.users.Token
-import net.johanbasson.gryphon.domain.users.User
+import net.johanbasson.gryphon.domain.ApiError
 import org.mindrot.jbcrypt.BCrypt
 import java.util.*
 
@@ -23,7 +20,6 @@ class AuthenticateTests : FunSpec({
     suspend fun getUserByEmail(email: String): Either<ApiError, User>  = Either.right(User(UUID.randomUUID(), "admin", BCrypt.hashpw("admin", BCrypt.gensalt())))
 
     suspend fun getUserByEmailNotFound(email: String): Either<ApiError, User> = Either.left(ApiError.UserNotFound)
-
 
     test("should authenticate with correct credentials") {
         runBlocking {
@@ -39,7 +35,7 @@ class AuthenticateTests : FunSpec({
         runBlocking {
             val result: Either<ApiError, Token> = Authenticate(secretKey, ::getUserByEmailNotFound)(Credentials("admmin", "admin"))
             result.fold(
-                    { err -> err shouldBe  ApiError.InvalidEmailOrPassword },
+                    { err -> err shouldBe ApiError.InvalidEmailOrPassword },
                     { fail("No token should be generated if user does not exists") }
             )
         }
