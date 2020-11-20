@@ -5,3 +5,4 @@ import net.johanbasson.gryphon.domain.ApiError
 
 
 typealias GetUserByEmail = suspend (String) -> Either<ApiError, User>
+typealias PersistNewUser = suspend (User) -> Either<Throwable, User>

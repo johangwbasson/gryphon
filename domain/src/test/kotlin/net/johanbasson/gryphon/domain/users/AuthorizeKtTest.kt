@@ -16,7 +16,7 @@ class AuthorizeKtTest : FunSpec({
     test("Should return a principal with a correct JWT token") {
         runBlocking {
             val id = UUID.randomUUID()
-            val token = generateToken(User(id, "admin", ""), secretKey)
+            val token = generateToken(User(id, "admin", "", listOf(Role.USER)), secretKey)
             val result = authorize("BEARER ${token.value}", secretKey)
             when (result) {
                 is Either.Left -> fail("Should not return an error")

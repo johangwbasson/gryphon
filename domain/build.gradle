@@ -25,10 +25,10 @@ dependencies {
     runtime 'io.jsonwebtoken:jjwt-impl:0.10.7'
     runtime 'io.jsonwebtoken:jjwt-jackson:0.10.7'
     implementation 'io.jsonwebtoken:jjwt-api:0.10.7'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
+
 
     // Test
-//    runtime group: 'io.kotest', name: 'kotest-assertions-core-jvm', version: '4.3.1'
-//    testCompile group: 'io.kotest', name: 'kotest-runner-junit5-jvm', version: '4.3.1'
     testImplementation 'io.kotest:kotest-runner-junit5:4.3.1'
     testImplementation 'io.kotest:kotest-assertions-core:4.3.1'
     testImplementation 'io.kotest:kotest-property:4.3.1'

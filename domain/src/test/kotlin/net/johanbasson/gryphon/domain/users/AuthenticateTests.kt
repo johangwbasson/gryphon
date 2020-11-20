@@ -17,7 +17,7 @@ class AuthenticateTests : FunSpec({
 
     val secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256)
 
-    suspend fun getUserByEmail(email: String): Either<ApiError, User>  = Either.right(User(UUID.randomUUID(), "admin", BCrypt.hashpw("admin", BCrypt.gensalt())))
+    suspend fun getUserByEmail(email: String): Either<ApiError, User>  = Either.right(User(UUID.randomUUID(), "admin", BCrypt.hashpw("admin", BCrypt.gensalt()), listOf(Role.USER)))
 
     suspend fun getUserByEmailNotFound(email: String): Either<ApiError, User> = Either.left(ApiError.UserNotFound)
 
